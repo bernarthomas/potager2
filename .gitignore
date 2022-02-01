@@ -52,4 +52,5 @@
 /.web-server-pid
 
 .idea/
+.phpunit.result.cache
 
