@@ -1,14 +1,16 @@
 <?php
+namespace App\Tests;
 
-use  Symfony\Component\HttpClient\NativeHttpClient;
+use \Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 
-class CultureTest extends \PHPUnit\Framework\TestCase
+class CultureTest extends WebTestCase
 {
     public function testAffichagePageListeCultures()
     {
-        $clientHttp = new NativeHttpClient();
-        $response = $clientHttp->request('GET','http://potager2/cultures/liste');
+        $client = static::createClient();
+        $response = $client->request('GET', '/');
+        $this->assertResponseIsSuccessful();
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
     }
 }
