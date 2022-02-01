@@ -1,2 +1,2 @@
 # potager2
-Infrastructure
+Infrastructure de l'application potager2
