@@ -11,6 +11,8 @@
   ],
   "minimum-stability": "dev",
   "require": {
-    "php": "^8.0"
+    "php": "^8.0",
+    "bernarthomas/potager-metier": "dev-main",
+    "phpunit/phpunit": "10.0.x-dev"
   }
 }
