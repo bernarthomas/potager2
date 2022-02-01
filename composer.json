@@ -1,0 +1,16 @@
+{
+  "name": "bernarthomas/potager2",
+  "description": "Fournit une infrastructre pour implémenter potager2",
+  "type": "package",
+  "license": "GPL-3.0+",
+  "authors": [
+    {
+      "name": "Thomas",
+      "email": "bernarthomas@free.fr"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "php": "^8.0"
+  }
+}
