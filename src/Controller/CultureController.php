@@ -1,10 +1,12 @@
 <?php
 namespace App\Controller;
 
+use Symfony\Component\HttpFoundation\Response;
+
 class CultureController
 {
     public function liste()
     {
-        return new \Symfony\Component\HttpFoundation\Response('Nomenclature des cultures');
+        return new Response('Nomenclature des cultures');
     }
 }
