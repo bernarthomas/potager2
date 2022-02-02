@@ -9,7 +9,8 @@ class CultureTest extends WebTestCase
     public function testAffichagePageListeCultures()
     {
         $client = static::createClient();
-        $client->request('GET', 'http://potager2/cultures');
+        $routeur = $client->getContainer()->get('router');
+        $client->request('GET', $routeur->generate('liste_cultures'));
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
 
