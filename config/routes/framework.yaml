@@ -2,3 +2,9 @@ when@dev:
     _errors:
         resource: '@FrameworkBundle/Resources/config/routing/errors.xml'
         prefix: /_error
+
+liste_cultures:
+    path: /cultures
+    controller: App\Controller\CultureController::liste
+
+
