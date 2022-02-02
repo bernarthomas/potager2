@@ -103,6 +103,9 @@
     "sebastian/version": {
         "version": "4.0-dev"
     },
+    "symfony/browser-kit": {
+        "version": "6.0.x-dev"
+    },
     "symfony/cache": {
         "version": "v6.0.3"
     },
@@ -129,6 +132,9 @@
     },
     "symfony/deprecation-contracts": {
         "version": "v3.0.0"
+    },
+    "symfony/dom-crawler": {
+        "version": "6.0.x-dev"
     },
     "symfony/dotenv": {
         "version": "v6.0.3"
