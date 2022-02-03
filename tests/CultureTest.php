@@ -21,14 +21,4 @@ class CultureTest extends WebTestCase
         $client->request('GET', $routeur->generate('liste_cultures'));
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
-
-    /**
-     * Classe du kernel
-     *
-     * @return string
-     */
-    protected static function getKernelClass(): string
-    {
-        return '\App\Kernel';
-    }
 }
