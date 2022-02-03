@@ -1,7 +1,6 @@
 <?php
 namespace App\Controller;
 
-use Bt\Port\Templating\TemplateInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -9,21 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class CultureController
 {
-    /**
-     * Moteur de template
-     * 
-     * @var TemplateInterface
-     */
-    private TemplateInterface $template;
-
-    /**
-     * @param TemplateInterface $template
-     */
-    public function __construct(TemplateInterface $template)
-    {
-        $this->template = $template;
-    }
-
+    use \App\Trait\TemplateTrait;
     /**
      * Affiche la liste des occurences
      * 
@@ -31,6 +16,6 @@ class CultureController
      */
     public function liste(): Response
     {
-        return new Response($this->template->render('culture/liste.html.twig', ['contenu' => 'Nomenclature des cultures']));
+        return new Response($this->template->render('culture/liste.html.twig', ['contenu' => 'Nomenclature des cultures2']));
     }
 }
