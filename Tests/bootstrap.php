@@ -1,4 +1,5 @@
 <?php
+namespace App\Tests;
 
 use Symfony\Component\Dotenv\Dotenv;
 

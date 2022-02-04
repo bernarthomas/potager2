@@ -1,1 +1,5 @@
-{{ contenu }}
+{% extends 'base.html.twig' %}
+{% block body %}
+<h1>{{ contenu }}</h1>
+    {% include 'culture/ajouter.html.twig' %}
+{% endblock %}

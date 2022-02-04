@@ -103,6 +103,9 @@
     "sebastian/version": {
         "version": "4.0-dev"
     },
+    "symfony/asset": {
+        "version": "6.0.x-dev"
+    },
     "symfony/browser-kit": {
         "version": "6.0.x-dev"
     },
@@ -126,6 +129,9 @@
         "files": [
             "bin/console"
         ]
+    },
+    "symfony/css-selector": {
+        "version": "6.0.x-dev"
     },
     "symfony/dependency-injection": {
         "version": "v6.0.3"
@@ -191,6 +197,9 @@
     "symfony/http-kernel": {
         "version": "v6.0.4"
     },
+    "symfony/password-hasher": {
+        "version": "6.0.x-dev"
+    },
     "symfony/polyfill-intl-grapheme": {
         "version": "v1.24.0"
     },
@@ -219,11 +228,23 @@
     "symfony/runtime": {
         "version": "v6.0.3"
     },
+    "symfony/security-core": {
+        "version": "6.0.x-dev"
+    },
+    "symfony/security-csrf": {
+        "version": "6.0.x-dev"
+    },
     "symfony/service-contracts": {
         "version": "v3.0.0"
     },
     "symfony/string": {
         "version": "v6.0.3"
+    },
+    "symfony/translation-contracts": {
+        "version": "3.1-dev"
+    },
+    "symfony/twig-bridge": {
+        "version": "6.0.x-dev"
     },
     "symfony/var-dumper": {
         "version": "v6.0.3"

@@ -21,4 +21,22 @@ class CultureTest extends WebTestCase
         $client->request('GET', $routeur->generate('liste_cultures'));
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
+
+    /**
+     * Formulaire ajouter une culture
+     *
+     * @return void
+     */
+    public function testAffichageFormulaireAjouterCulture()
+    {
+        $client = static::createClient();
+        $routeur = $client->getContainer()->get('router');
+        $navigateurDOM = $client->request('GET', $routeur->generate('liste_cultures'));
+        $this->assertResponseIsSuccessful();
+        $formulaire = $navigateurDOM->filter('form')->form(
+            ['libelle' => 'carotte']
+        );
+        $client->submit($formulaire);
+        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+    }
 }

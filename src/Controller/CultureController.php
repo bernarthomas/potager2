@@ -1,7 +1,10 @@
 <?php
 namespace App\Controller;
 
+
+use App\Service\Controller\CultureHelper;
 use Symfony\Component\HttpFoundation\Response;
+
 
 /**
  * Crud de la nomenclature des cultures
@@ -9,13 +12,13 @@ use Symfony\Component\HttpFoundation\Response;
 class CultureController
 {
     use \App\Trait\TemplateTrait;
+
     /**
-     * Affiche la liste des occurences
-     * 
+     * @param CultureHelper $helper
      * @return Response
      */
-    public function liste(): Response
+    public function liste(CultureHelper $helper): Response
     {
-        return new Response($this->template->render('culture/liste.html.twig', ['contenu' => 'Nomenclature des cultures2']));
+        return new Response($this->template->render('culture/liste.html.twig', ['contenu' => 'Nomenclature des cultures']));
     }
 }
