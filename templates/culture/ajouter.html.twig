@@ -1,9 +1,9 @@
-<form method="post">
+<form id="formulaire-ajouter-culture" method="post" >
     <fieldset>
         <legend>Ajouter une culture</legend>
     <label for="libelle">Libellé : </label>
-    <input id="libelle" name="libelle" />
+    <input id="libelle" name="libelle" value="{{ libelle }}"/>
+    <input id="_token" type="hidden" name="_token" value="{{ _token }}">
     <input id="bouton-ajouter-culture" type="submit" value="ajouter" />
-{#    <input type="hidden" name="_csrf_token" value="{{  csrf_token(csrf_token) }}">#}
     </fieldset>
 </form>

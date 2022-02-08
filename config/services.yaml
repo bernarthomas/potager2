@@ -26,4 +26,4 @@ services:
         tags: [ 'controller.service_arguments' ]
 
     Bt\Port\Templating\TemplateInterface:
-        alias: App\Out\TwigTemplate
+        alias: App\Sortie\TwigTemplate

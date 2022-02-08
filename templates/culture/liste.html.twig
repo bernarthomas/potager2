@@ -1,5 +1,10 @@
 {% extends 'base.html.twig' %}
+
+{% block title %}
+    Nomenclature des cultures - {{ parent() }}
+{% endblock %}
+
 {% block body %}
-<h1>{{ contenu }}</h1>
+<h1>Nomenclature des cultures</h1>
     {% include 'culture/ajouter.html.twig' %}
 {% endblock %}

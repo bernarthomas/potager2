@@ -9,17 +9,12 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class CultureTest extends WebTestCase
 {
-    /**
-     * Page liste des cultures
-     *
-     * @return void
-     */
-    public function testAffichagePageListeCultures()
+    private $client;
+    private $routeur;
+    protected function setUp(): void
     {
-        $client = static::createClient();
-        $routeur = $client->getContainer()->get('router');
-        $client->request('GET', $routeur->generate('liste_cultures'));
-        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+        $this->client = static::createClient();
+        $this->routeur = $this->client->getContainer()->get('router');
     }
 
     /**
@@ -27,16 +22,16 @@ class CultureTest extends WebTestCase
      *
      * @return void
      */
-    public function testAffichageFormulaireAjouterCulture()
+    public function testFormulaireAjouterCulture()
     {
-        $client = static::createClient();
-        $routeur = $client->getContainer()->get('router');
-        $navigateurDOM = $client->request('GET', $routeur->generate('liste_cultures'));
+        $retourGet = $this->client->request('GET', $this->routeur->generate('liste_cultures'));
+        $this->assertSelectorTextContains('fieldset legend', 'Ajouter une culture');
+        $this->assertSelectorTextContains('h1', 'Nomenclature des cultures');
         $this->assertResponseIsSuccessful();
-        $formulaire = $navigateurDOM->filter('form')->form(
-            ['libelle' => 'carotte']
-        );
-        $client->submit($formulaire);
+        $formulaire = $retourGet->filter('#formulaire-ajouter-culture')->form();
+        $retourPost = $this->client->submit($formulaire, ['libelle' => 'carotte']);
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+        $this->assertNotNull($retourPost->filter('#_token')->attr('value'));
+        $this->assertNotNull($retourPost->filter('#libelle')->attr('value'));
     }
 }

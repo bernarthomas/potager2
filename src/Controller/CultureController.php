@@ -3,6 +3,7 @@ namespace App\Controller;
 
 
 use App\Service\Controller\CultureHelper;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 
@@ -14,11 +15,27 @@ class CultureController
     use \App\Trait\TemplateTrait;
 
     /**
+     * Ajouter une culture
+     *
      * @param CultureHelper $helper
+     * @param Request $httpRequest
+     *
      * @return Response
      */
-    public function liste(CultureHelper $helper): Response
+    public function liste(CultureHelper $helper, Request $httpRequest): Response
     {
-        return new Response($this->template->render('culture/liste.html.twig', ['contenu' => 'Nomenclature des cultures']));
+        $helper
+            ->genereJetonCsrf()
+            ->initialiseDonnees()
+        ;
+        if ('POST' === $httpRequest->getMethod()) {
+            $helper
+                ->instancieCulture()
+                ->ajouteOccurence()
+                ->metAJourDonnees()
+                ;
+        }
+
+        return new Response($this->template->render('culture/liste.html.twig', $helper->getDonnees()));
     }
 }

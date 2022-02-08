@@ -1,14 +1,15 @@
 <?php
 
-namespace App\Out;
+namespace App\Sortie;
 
+use Bt\Port\Templating\ViewModelInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use Bt\Port\Templating\TemplateInterface;
 
 /**
- * Branche Twig à partir sur le port correspondant
+ * Branche Twig sur le port correspondant
  */
 class TwigTemplate implements TemplateInterface
 {
@@ -35,6 +36,7 @@ class TwigTemplate implements TemplateInterface
             'cache' => dirname(__DIR__, 2)
                 . DIRECTORY_SEPARATOR .'var/cache/' . DIRECTORY_SEPARATOR . $this->parametres->get('app_env')
         ]);
+
         return $twig->render($nomFichier, $parametres);
     }
 }
