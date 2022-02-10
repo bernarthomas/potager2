@@ -15,11 +15,23 @@ class ListeViewModel implements ViewModelInterface
     public string $_token;
 
     /**
+     * @var string
+     */
+    public string $libelle;
+
+    /**
+     * @var array
+     */
+    public array $occurences;
+
+    /**
      * @param string $_token
      */
-    public function __construct(string $_token)
+    public function __construct()
     {
-        $this->_token = $_token;
+        $this->_token = '';
+        $this->libelle = '';
+        $this->occurences = [];
     }
 
     /**
@@ -27,6 +39,6 @@ class ListeViewModel implements ViewModelInterface
      */
     public function toArray(): array
     {
-        return ['_token' => $this->_token,];
+        return ['_token' => $this->_token, 'libelle' => $this->libelle, 'occurences' => $this->occurences];
     }
 }

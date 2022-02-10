@@ -1,5 +1,41 @@
 {% extends 'base.html.twig' %}
 
+{% block stylesheets %}
+    <style>
+        html {
+            width: 100%;
+        }
+        body {
+            margin: 10px;
+            width: calc(100% - 20px);
+        }
+        h1 {
+            margin-top: 10px;
+        }
+        form {
+            width: 100%;
+        }
+        fieldset {
+            width: calc(100% - 32px);
+        }
+        .contenantflex {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+        }
+        .culture {
+            background-color: cornsilk;
+            border: solid 1px #000000;
+            margin: 5px;
+            padding: 5px;
+            width: auto;
+        }
+        .enligne {
+            white-space: nowrap;
+        }
+    </style>
+{% endblock %}
+
 {% block title %}
     Nomenclature des cultures - {{ parent() }}
 {% endblock %}
@@ -7,4 +43,20 @@
 {% block body %}
 <h1>Nomenclature des cultures</h1>
     {% include 'culture/ajouter.html.twig' %}
+    <form id="formulaire-liste-culture" method="post">
+        <fieldset>
+            <legend>Cultures existantes</legend>
+    {% if occurences is empty %}
+        <p>Aucun résultat</p>
+    {% else %}
+        <div class="contenantflex">
+        {% for culture in occurences %}
+            <div class="culture">
+                <div><div class="enligne" title="id : {{ culture.id }}" >{{ culture.libelle }}</div></div>
+            </div>
+        {% endfor %}
+        </div>
+    {% endif %}
+        </fieldset>
+    </form>
 {% endblock %}

@@ -32,10 +32,9 @@ class CultureController
             $helper
                 ->instancieCulture()
                 ->ajouteOccurence()
-                ->metAJourViewModel()
+//                ->metAJourViewModel()
                 ;
         }
-
         return new Response($this->template->render('culture/liste.html.twig', $helper->getViewModel()->toArray()));
     }
 }

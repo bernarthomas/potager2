@@ -42,6 +42,8 @@ class CultureHelper
     {
         $this->donnees = [];
         $this->request = $requestStack->getCurrentRequest();
+        $this->viewModel = new ListeViewModel();
+        $this->culture = new CulturePDO();
     }
 
     /**
@@ -49,7 +51,7 @@ class CultureHelper
      */
     public function genereJetonCsrf()
     {
-        $this->jeton = (new CsrfTokenManager())->refreshToken('liste_cultures');
+        $this->viewModel->_token = (new CsrfTokenManager())->refreshToken('liste_cultures');
 
         return $this;
     }
@@ -59,7 +61,9 @@ class CultureHelper
      */
     public function initialiseDonnees()
     {
-        $this->viewModel = (new ListeViewModel($this->jeton));
+        $this->viewModel = new ListeViewModel();
+        $this->culture = new CulturePDO();
+        $this->viewModel->occurences = $this->culture->collecte();
 
         return $this;
     }
@@ -69,7 +73,6 @@ class CultureHelper
      */
     public function instancieCulture()
     {
-        $this->culture = new CulturePDO();
         $this->culture
             ->setDonnees($this->request->request->all())
             ->hydrate();
@@ -87,13 +90,13 @@ class CultureHelper
         return $this;
     }
 
-    /**
-     * @return void
-     */
-    public function metAJourViewModel()
-    {
-        $this->viewModel->libelle = $this->request->request->get('libelle');
-    }
+//    /**
+//     * @return void
+//     */
+//    public function metAJourViewModel()
+//    {
+//        $this->viewModel->libelle = $this->request->request->get('libelle');
+//    }
 
     /**
      * @return ViewModelInterface

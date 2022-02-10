@@ -14,6 +14,10 @@ class CulturePDO extends _PDO implements CultureInterface
      */
     public array $donnees;
     /**
+     * @var int
+     */
+    public int $id;
+    /**
      * @var string
      */
     public string $libelle;
@@ -31,9 +35,10 @@ class CulturePDO extends _PDO implements CultureInterface
      */
     public function ajoute(): bool
     {
-        $statement = self::prepare("INSERT INTO _n_culture (libelle) VALUES (:libelle)");
-
-        return $statement->execute(['libelle' => $this->libelle]);
+        return self
+            ::prepare("INSERT INTO _n_culture (libelle) VALUES (:libelle)")
+            ->execute(['libelle' => $this->libelle])
+            ;
     }
 
     /**
@@ -49,8 +54,11 @@ class CulturePDO extends _PDO implements CultureInterface
      */
     public function collecte(): array
     {
-        // TODO: Implement collecte() method.
-        return true;
+        return self
+            ::query("SELECT * FROM  _n_culture ORDER BY libelle")
+            ->fetchAll(self::FETCH_CLASS, CulturePDO::class)
+            ?? []
+            ;
     }
 
     /**
