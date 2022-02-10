@@ -90,14 +90,6 @@ class CultureHelper
         return $this;
     }
 
-//    /**
-//     * @return void
-//     */
-//    public function metAJourViewModel()
-//    {
-//        $this->viewModel->libelle = $this->request->request->get('libelle');
-//    }
-
     /**
      * @return ViewModelInterface
      */
