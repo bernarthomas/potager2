@@ -2,6 +2,7 @@
 
 namespace App\Service\Controller;
 
+use App\Contrats\ViewModelInterface;
 use App\Model\PDO\CulturePDO;
 use App\ViewModel\Culture\ListeViewModel;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,9 +21,9 @@ class CultureHelper
     private CulturePDO $culture;
 
     /**
-     * @var array
+     * @var ViewModelInterface
      */
-    private array $donnees;
+    private ViewModelInterface $viewModel;
 
     /**
      * @var CsrfToken
@@ -58,7 +59,7 @@ class CultureHelper
      */
     public function initialiseDonnees()
     {
-        $this->donnees = (new ListeViewModel($this->jeton))->toArray();
+        $this->viewModel = (new ListeViewModel($this->jeton));
 
         return $this;
     }
@@ -89,16 +90,16 @@ class CultureHelper
     /**
      * @return void
      */
-    public function metAJourDonnees()
+    public function metAJourViewModel()
     {
-        $this->donnees['libelle'] = $this->request->request->get('libelle');
+        $this->viewModel->libelle = $this->request->request->get('libelle');
     }
 
     /**
-     * @return array
+     * @return ViewModelInterface
      */
-    public function getDonnees(): array
+    public function getViewModel(): ViewModelInterface
     {
-        return $this->donnees;
+        return $this->viewModel;
     }
 }
