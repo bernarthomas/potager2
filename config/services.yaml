@@ -27,3 +27,17 @@ services:
 
     Bt\Port\Templating\TemplateInterface:
         alias: App\Sortie\TwigTemplate
+
+    Bt\Culture\GestionnaireCultureInterface:
+        alias: App\Model\PDO\CultureDTO
+
+    Bt\Culture\Culture:
+        class: \Bt\Culture\Culture
+        arguments:
+            - 'Ajoutez une culture'
+            - []
+
+    Bt\Culture\ListeCultures:
+        class: \Bt\Culture\ListeCultures
+        arguments:
+            - []

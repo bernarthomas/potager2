@@ -3,14 +3,25 @@ namespace App\Tests;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
+use DateTime;
 
 /**
  * Tests fonctionnels CRUD nomenclature Cultures
  */
 class CultureTest extends WebTestCase
 {
+    /**
+     * @var \Symfony\Bundle\FrameworkBundle\KernelBrowser
+     */
     private $client;
+    /**
+     * @var object|null
+     */
     private $routeur;
+
+    /**
+     * @return void
+     */
     protected function setUp(): void
     {
         $this->client = static::createClient();
@@ -29,9 +40,9 @@ class CultureTest extends WebTestCase
         $this->assertSelectorTextContains('h1', 'Nomenclature des cultures');
         $this->assertResponseIsSuccessful();
         $formulaire = $retourGet->filter('#formulaire-ajouter-culture')->form();
-        $retourPost = $this->client->submit($formulaire, ['libelle' => 'carotte']);
+        $formulaire['libelle']->setValue(md5((new DateTime())->format('dmYhis')));
+        $retourPost = $this->client->submit($formulaire);
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
-        $this->assertNotNull($retourPost->filter('#_token')->attr('value'));
-        $this->assertNotNull($retourPost->filter('#libelle')->attr('value'));
+        $this->assertSame(0, $retourPost->filter('html:contains("une culture doit être unique.")')->count());
     }
 }

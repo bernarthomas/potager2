@@ -2,13 +2,17 @@
 
 namespace App\Service\Controller;
 
-use App\Contrats\ViewModelInterface;
-use App\Model\PDO\CulturePDO;
-use App\ViewModel\Culture\ListeViewModel;
+use App\Contrats\VueInterface;
+use Bt\Culture\AjouteCultureAction;
+use Bt\Culture\Culture;
+use Bt\Culture\GestionnaireCultureInterface;
+use Bt\Culture\ListeCultures;
+use Bt\Exception\PotagerException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Security\Csrf\CsrfToken;
-use Symfony\Component\Security\Csrf\CsrfTokenManager;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
 /**
  * Service Symfony responsable de la nomenclature des cultures
@@ -16,14 +20,14 @@ use Symfony\Component\Security\Csrf\CsrfTokenManager;
 class CultureHelper
 {
     /**
-     * @var CulturePDO
+     * @var AjouteCultureAction
      */
-    private CulturePDO $culture;
+    private AjouteCultureAction $ajouteCultureAction;
 
     /**
-     * @var ViewModelInterface
+     * @var Culture
      */
-    private ViewModelInterface $viewModel;
+    private Culture $cultureAAjouter;
 
     /**
      * @var CsrfToken
@@ -31,27 +35,76 @@ class CultureHelper
     private CsrfToken $jeton;
 
     /**
-     * @var Request|null
+     * @var VueInterface Objet de données passées à la vue
      */
-    private Request $request;
+    private VueInterface $vue;
 
     /**
+     * @var Request Occurence
+     */
+    private Request $requeteHttp;
+
+    /**
+     * @var SessionInterface Occurence
+     */
+    private SessionInterface $session;
+
+    /**
+     * @param CsrfTokenManagerInterface
+     */
+    private CsrfTokenManagerInterface $gestionnaireJeton;
+
+    /**
+     * @var GestionnaireCultureInterface
+     */
+    private GestionnaireCultureInterface $gestionnaireCulture;
+
+    /**
+     * @param CsrfTokenManagerInterface $gestionnaireJeton
      * @param RequestStack $requestStack
+     * @param VueInterface $vue
+     * @param GestionnaireCultureInterface $gestionnaireCulture
+     * @param Culture $cultureAAjouter
+     * @param ListeCultures $listeCultures
      */
-    public function __construct(RequestStack $requestStack)
-    {
-        $this->donnees = [];
-        $this->request = $requestStack->getCurrentRequest();
-        $this->viewModel = new ListeViewModel();
-        $this->culture = new CulturePDO();
+    public function __construct(
+        CsrfTokenManagerInterface $gestionnaireJeton,
+        RequestStack $requestStack,
+        VueInterface $vue,
+        GestionnaireCultureInterface $gestionnaireCulture,
+        Culture $cultureAAjouter,
+        ListeCultures $listeCultures
+    ) {
+        $this->requeteHttp = $requestStack->getCurrentRequest();
+        $this->session = $this->requeteHttp->getSession();
+        $this->vue = $vue;
+        $this->gestionnaireJeton = $gestionnaireJeton;
+        $this->gestionnaireCulture = $gestionnaireCulture;
+        $this->jeton = $this->gestionnaireJeton->refreshToken('liste_cultures');
+        $this->cultureAAjouter = $cultureAAjouter;
+        $this->listeCultures = $listeCultures;
     }
 
     /**
      * @return $this
      */
-    public function genereJetonCsrf()
+    public function instancieCultureAAjouterAvecGestionErreurs(): CultureHelper
     {
-        $this->viewModel->_token = (new CsrfTokenManager())->refreshToken('liste_cultures');
+        try {
+            $this->cultureAAjouter = new Culture($this->requeteHttp->request->get('libelle'), $this->gestionnaireCulture->collecte());
+        } catch (PotagerException $e) {
+            $this->session->getFlashBag()->add('warning', $e->getMessage());
+        } finally {
+            return $this;
+        }
+    }
+
+    /**
+     * @return $this
+     */
+    public function instancieAjoutCultureAction(): CultureHelper
+    {
+        $this->ajouteCultureAction = new AjouteCultureAction($this->gestionnaireCulture, $this->cultureAAjouter);
 
         return $this;
     }
@@ -59,11 +112,9 @@ class CultureHelper
     /**
      * @return $this
      */
-    public function initialiseDonnees()
+    public function enregistreAjoutCultureAction(): CultureHelper
     {
-        $this->viewModel = new ListeViewModel();
-        $this->culture = new CulturePDO();
-        $this->viewModel->occurences = $this->culture->collecte();
+        $this->ajouteCultureAction->enregistre();
 
         return $this;
     }
@@ -71,30 +122,37 @@ class CultureHelper
     /**
      * @return $this
      */
-    public function instancieCulture()
+    public function instancieListeCultures(): CultureHelper
     {
-        $this->culture
-            ->setDonnees($this->request->request->all())
-            ->hydrate();
+        try {
+            $this->listeCultures = new ListeCultures($this->gestionnaireCulture->collecte());
+        } catch (PotagerException $e) {
+            $this->session->getFlashBag()->add('warning', $e->getMessage());
+        } finally {
 
-        return $this;
+            return $this;
+        }
     }
 
     /**
      * @return $this
      */
-    public function ajouteOccurence()
+    public function peupleVue(): CultureHelper
     {
-        $this->culture->ajoute();
+        $this->vue
+            ->setJeton($this->jeton)
+            ->setOccurences($this->listeCultures->getOccurences())
+            ->setFlashMessages($this->session->getFlashBag()->all())
+        ;
 
         return $this;
     }
 
     /**
-     * @return ViewModelInterface
+     * @return VueInterface
      */
-    public function getViewModel(): ViewModelInterface
+    public function getVue(): VueInterface
     {
-        return $this->viewModel;
+        return $this->vue;
     }
 }

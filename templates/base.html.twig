@@ -9,6 +9,17 @@
     </head>
     {% block body %}
     <body>
+    {% block flashmessages %}
+        {% if flashMessages is defined and flashMessages is not null %}
+            {% for type, messages in flashMessages %}
+                {% for message in messages %}
+        <div class="flash-{{ type }}" >{{ message }}</div>
+                {% endfor %}
+            {% endfor %}
+        {% endif %}
+    {% endblock %}
+    {% block content %}
+    {% endblock %}
     {% block javascripts %}
     {% endblock %}
     </body>
