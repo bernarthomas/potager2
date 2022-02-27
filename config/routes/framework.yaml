@@ -5,6 +5,17 @@ when@dev:
 
 liste_cultures:
     path: /cultures
-    controller: App\Controller\CultureController::liste
+    controller: App\Controller\ListeCulturesController::traitement
+    methods:    GET
+
+ajoute_culture:
+    path: /culture/ajoute
+    controller: App\Controller\AjouteCultureController::traitement
+    methods:    POST
+
+supprime_culture:
+    path: /culture/supprime
+    controller: App\Controller\SupprimeCultureController::traitement
+    methods:    POST
 
 

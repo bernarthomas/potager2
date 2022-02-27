@@ -1,0 +1,5 @@
+<form id="formulaire-supprimer-culture-{{ culture.id }}" method="post"  action="/culture/supprime">
+    <input id="id" type="hidden" name="id" value="{{ culture.id }}">
+    <input id="_token" type="hidden" name="_token" value="{{ _token }}">
+    <input id="bouton-supprimer-culture-{{ culture.id }}" title="Supprimer cette culture" type="submit" value="x" />
+</form>

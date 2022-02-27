@@ -1,13 +1,13 @@
 <?php
 
-namespace App\ViewModel\Culture;
+namespace App\Vue\Culture;
 
 use App\Contrats\VueInterface;
 
 /**
- * Objet passé à la vue pour fournir tous ses variables
+ * Objet passé à la vue pour fournir toutes ses variables
  */
-class ListeViewModel implements VueInterface
+class Liste implements VueInterface
 {
     /**
      * @var string
@@ -15,9 +15,11 @@ class ListeViewModel implements VueInterface
     private string $jeton;
 
     /**
-     * @var
+     * Messages affichés pour l'utilisateur
+     *
+     * @var array
      */
-    private $flashMessages;
+    private array $flashMessages;
 
     /**
      * @var string
@@ -29,9 +31,6 @@ class ListeViewModel implements VueInterface
      */
     private array $occurences;
 
-    /**
-     * @param string $jeton
-     */
     public function __construct()
     {
         $this->jeton = '';
@@ -54,14 +53,32 @@ class ListeViewModel implements VueInterface
     }
 
     /**
+     * Accesseur jetonde sécurité
+     *
      * @return string
      */
-    public function getToken(): string
+    public function getJeton(): string
     {
         return $this->jeton;
     }
 
     /**
+     * Mutateur jeton de sécurité
+     *
+     * @param string $jeton
+     *
+     * @return VueInterface
+     */
+    public function setJeton(string $jeton): VueInterface
+    {
+        $this->jeton = $jeton;
+
+        return $this;
+    }
+
+    /**
+     * Accesseur libellé culture
+     *
      * @return string
      */
     public function getLibelle(): string
@@ -70,11 +87,13 @@ class ListeViewModel implements VueInterface
     }
 
     /**
+     * Mutateur libellé culture
+     *
      * @param string $libelle
      *
-     * @return ListeViewModel
+     * @return Liste
      */
-    public function setLibelle(string $libelle): ListeViewModel
+    public function setLibelle(string $libelle): Liste
     {
         $this->libelle = $libelle;
 
@@ -82,6 +101,8 @@ class ListeViewModel implements VueInterface
     }
 
     /**
+     * Accesseur cultures stockees
+     *
      * @return array
      */
     public function getOccurences(): array
@@ -90,19 +111,25 @@ class ListeViewModel implements VueInterface
     }
 
     /**
+     * Mutateur cultures stockees
+     *
      * @param array $occurences
-     * @return ListeViewModel
+     *
+     * @return Liste
      */
-    public function setOccurences(array $occurences): ListeViewModel
+    public function setOccurences(array $occurences): Liste
     {
         $this->occurences = $occurences;
+
         return $this;
     }
 
     /**
+     * Mutateur messages alerte utilisateur
+     *
      * @param array $messages
      *
-     * @return ListeViewModel
+     * @return Liste
      */
     public function setFlashMessages(array $messages): self
     {
@@ -112,17 +139,12 @@ class ListeViewModel implements VueInterface
     }
 
     /**
+     * Accesseur messages alerte utilisateur
+     *
      * @return mixed
      */
     public function getFlashMessages(): array
     {
         return $this->flashMessages;
-    }
-
-    public function setJeton(string $jeton): VueInterface
-    {
-        $this->jeton = $jeton;
-
-        return $this;
     }
 }

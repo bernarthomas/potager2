@@ -52,7 +52,10 @@
         <div class="contenantflex">
         {% for culture in occurences %}
             <div class="culture">
-                <div><div class="enligne" title="id : {{ culture.id }}" >{{ culture.libelle }}</div></div>
+                <div>
+                    <div class="enligne" title="id : {{ culture.id }}" >{{ culture.libelle }}</div>
+                    {% include 'culture/supprimer.html.twig' %}
+                </div>
             </div>
         {% endfor %}
         </div>

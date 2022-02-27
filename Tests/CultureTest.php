@@ -1,6 +1,7 @@
 <?php
 namespace App\Tests;
 
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Response;
 use DateTime;
@@ -11,13 +12,13 @@ use DateTime;
 class CultureTest extends WebTestCase
 {
     /**
-     * @var \Symfony\Bundle\FrameworkBundle\KernelBrowser
+     * @var KernelBrowser
      */
-    private $client;
+    private KernelBrowser $client;
     /**
      * @var object|null
      */
-    private $routeur;
+    private ?object $routeur;
 
     /**
      * @return void
@@ -42,7 +43,7 @@ class CultureTest extends WebTestCase
         $formulaire = $retourGet->filter('#formulaire-ajouter-culture')->form();
         $formulaire['libelle']->setValue(md5((new DateTime())->format('dmYhis')));
         $retourPost = $this->client->submit($formulaire);
-        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+        $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
         $this->assertSame(0, $retourPost->filter('html:contains("une culture doit être unique.")')->count());
     }
 }

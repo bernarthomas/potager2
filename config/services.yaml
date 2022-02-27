@@ -5,6 +5,7 @@
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
     app_env: '%env(APP_ENV)%'
+    data_dsn: '%env(DATABASE_DSN)%'
 
 services:
     # default configuration for services in *this* file
@@ -28,8 +29,8 @@ services:
     Bt\Port\Templating\TemplateInterface:
         alias: App\Sortie\TwigTemplate
 
-    Bt\Culture\GestionnaireCultureInterface:
-        alias: App\Model\PDO\CultureDTO
+    Bt\Culture\GestionnaireInterface:
+        alias: App\Model\PDO\Culture
 
     Bt\Culture\Culture:
         class: \Bt\Culture\Culture

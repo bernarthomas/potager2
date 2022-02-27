@@ -3,11 +3,13 @@
 namespace App\Service\Controller;
 
 use App\Contrats\VueInterface;
-use Bt\Culture\AjouteCultureAction;
+use Bt\Culture\ActionAjoute;
+use Bt\Culture\ActionListe;
+use Bt\Culture\ActionSupprime;
 use Bt\Culture\Culture;
-use Bt\Culture\GestionnaireCultureInterface;
-use Bt\Culture\ListeCultures;
-use Bt\Exception\PotagerException;
+use Bt\Culture\ExceptionLibelleUnique;
+use Bt\Culture\ExceptionLibelleVide;
+use Bt\Culture\GestionnaireInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -20,19 +22,29 @@ use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 class CultureHelper
 {
     /**
-     * @var AjouteCultureAction
+     * @var ActionAjoute
      */
-    private AjouteCultureAction $ajouteCultureAction;
+    private ActionAjoute $actionAjoute;
 
     /**
-     * @var Culture
+     * @var ActionListe
      */
-    private Culture $cultureAAjouter;
+    private ActionListe $actionListe;
+
+    /**
+     * @var ActionSupprime
+     */
+    private ActionSupprime $actionSupprime;
 
     /**
      * @var CsrfToken
      */
     private CsrfToken $jeton;
+
+    /**
+     * @var array
+     */
+    private array $listeCultures;
 
     /**
      * @var VueInterface Objet de données passées à la vue
@@ -55,56 +67,41 @@ class CultureHelper
     private CsrfTokenManagerInterface $gestionnaireJeton;
 
     /**
-     * @var GestionnaireCultureInterface
+     * @var GestionnaireInterface
      */
-    private GestionnaireCultureInterface $gestionnaireCulture;
+    private GestionnaireInterface $gestionnaire;
 
     /**
      * @param CsrfTokenManagerInterface $gestionnaireJeton
      * @param RequestStack $requestStack
      * @param VueInterface $vue
-     * @param GestionnaireCultureInterface $gestionnaireCulture
-     * @param Culture $cultureAAjouter
-     * @param ListeCultures $listeCultures
+     * @param GestionnaireInterface $gestionnaire
      */
     public function __construct(
         CsrfTokenManagerInterface $gestionnaireJeton,
         RequestStack $requestStack,
         VueInterface $vue,
-        GestionnaireCultureInterface $gestionnaireCulture,
-        Culture $cultureAAjouter,
-        ListeCultures $listeCultures
+        GestionnaireInterface $gestionnaire
     ) {
         $this->requeteHttp = $requestStack->getCurrentRequest();
         $this->session = $this->requeteHttp->getSession();
         $this->vue = $vue;
         $this->gestionnaireJeton = $gestionnaireJeton;
-        $this->gestionnaireCulture = $gestionnaireCulture;
+        $this->gestionnaire = $gestionnaire;
         $this->jeton = $this->gestionnaireJeton->refreshToken('liste_cultures');
-        $this->cultureAAjouter = $cultureAAjouter;
-        $this->listeCultures = $listeCultures;
+        $this->actionListe = new ActionListe($this->gestionnaire);
     }
 
     /**
      * @return $this
+     *
+     * @throws ExceptionLibelleUnique
+     * @throws ExceptionLibelleVide
      */
-    public function instancieCultureAAjouterAvecGestionErreurs(): CultureHelper
+    public function creeActionAjoute(): CultureHelper
     {
-        try {
-            $this->cultureAAjouter = new Culture($this->requeteHttp->request->get('libelle'), $this->gestionnaireCulture->collecte());
-        } catch (PotagerException $e) {
-            $this->session->getFlashBag()->add('warning', $e->getMessage());
-        } finally {
-            return $this;
-        }
-    }
-
-    /**
-     * @return $this
-     */
-    public function instancieAjoutCultureAction(): CultureHelper
-    {
-        $this->ajouteCultureAction = new AjouteCultureAction($this->gestionnaireCulture, $this->cultureAAjouter);
+        $cultureAAjouter = new Culture(null, $this->requeteHttp->request->get('libelle'), $this->gestionnaire, true);
+        $this->actionAjoute = new ActionAjoute($cultureAAjouter);
 
         return $this;
     }
@@ -112,9 +109,23 @@ class CultureHelper
     /**
      * @return $this
      */
-    public function enregistreAjoutCultureAction(): CultureHelper
+    public function enregistreActionAjoute(): CultureHelper
     {
-        $this->ajouteCultureAction->enregistre();
+        $this->actionAjoute->execute();
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     *
+     * @throws ExceptionLibelleUnique
+     * @throws ExceptionLibelleVide
+     */
+    public function creeActionSupprime(): CultureHelper
+    {
+        $cultureASupprimer = new Culture($this->requeteHttp->request->get('id'), '',  $this->gestionnaire);
+        $this->actionSupprime = new ActionSupprime($cultureASupprimer);
 
         return $this;
     }
@@ -122,16 +133,21 @@ class CultureHelper
     /**
      * @return $this
      */
-    public function instancieListeCultures(): CultureHelper
+    public function enregistreActionSupprime(): CultureHelper
     {
-        try {
-            $this->listeCultures = new ListeCultures($this->gestionnaireCulture->collecte());
-        } catch (PotagerException $e) {
-            $this->session->getFlashBag()->add('warning', $e->getMessage());
-        } finally {
+        $this->actionSupprime->execute();
 
-            return $this;
-        }
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function collecteListeCultures(): CultureHelper
+    {
+        $this->listeCultures = $this->actionListe->execute();
+
+        return $this;
     }
 
     /**
@@ -141,7 +157,7 @@ class CultureHelper
     {
         $this->vue
             ->setJeton($this->jeton)
-            ->setOccurences($this->listeCultures->getOccurences())
+            ->setOccurences($this->listeCultures)
             ->setFlashMessages($this->session->getFlashBag()->all())
         ;
 
